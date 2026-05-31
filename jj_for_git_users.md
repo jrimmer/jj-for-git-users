@@ -8,12 +8,15 @@ Use this as a quick path from "I know Git" to "I can use jj safely in a real rep
 
 `jj` is a Git-compatible VCS front end and model. In normal use, commits still live in a Git repo and can be pushed to GitHub/GitLab. The UX and data model are different: your working copy is a real commit, commits evolve via stable change IDs, history editing is ordinary, conflicts are first-class, and every operation is undoable.
 
+This repo also includes an **`idiomatic-jj` coding-agent skill** at [`skills/idiomatic-jj/SKILL.md`](skills/idiomatic-jj/SKILL.md). It packages the jj mental model and best-practice command choices for AI coding assistants, so they are less likely to apply Git habits like staging, current-branch assumptions, or `rebase --continue` workflows to jj repositories. See the [README](README.md#install-the-skill-in-the-top-5-coding-harnesses) for install and usage instructions.
+
 **Version note:** command names and flags in jj have changed over time. This guide was checked against `jj 0.41.0`; if your installed version disagrees, trust `jj help <command>` and the latest official docs.
 
 ## Table of contents
 
 - [Start here: the mental model shift](#mental-model)
 - [Install and initialize](#install)
+- [Agent skill for AI coding assistants](#agent-skill)
 - [The 10-minute survival workflow](#survival-workflow)
 - [Git-to-jj command map](#command-map)
 - [Concept translation: Git words vs jj words](#concept-translation)
@@ -94,6 +97,22 @@ A few setup details matter:
 - `jj` respects `.gitignore`; you do not need a separate ignore format.
 - If `jj` warns that name/email are not configured, set them before creating pushable commits. Changing identity later does not automatically rewrite already-created commits unless you ask it to.
 - Prefer `jj git init` / `jj git clone` while the native backend is still less common. Use Git-backed repos for interop today.
+
+---
+
+<a id="agent-skill"></a>
+
+## Agent skill for AI coding assistants
+
+If you use AI coding agents, install the included [`idiomatic-jj` skill](skills/idiomatic-jj/SKILL.md). The skill gives agents a compact, operational version of this guide: check `jj status`/`jj log`, treat `@` as the working-copy commit, remember completed work is often `@-`, use `split`/`squash` instead of a Git index, handle bookmarks as publication pointers, inspect revsets before mutating history, and recover with the operation log.
+
+The [README](README.md#install-the-skill-in-the-top-5-coding-harnesses) has install and usage instructions for Pi, Zed, Claude Code, OpenAI Codex CLI, and Cursor. After installing, prompt your agent with something like:
+
+```text
+Use the idiomatic-jj skill for this repository. Prefer jj-native commands and explain any Git-to-jj translation.
+```
+
+This is especially useful for models that understand Git well but still default to non-idiomatic jj advice such as staging files, assuming an active branch moves with commits, or treating conflicts as a `--continue` state machine.
 
 ---
 
