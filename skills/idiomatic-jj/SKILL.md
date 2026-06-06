@@ -27,7 +27,11 @@ Before giving advice or running commands:
    ```bash
    jj help <command>
    ```
-5. Do not assume a "current branch" exists. Ask which commit/change/bookmark should be affected.
+5. If backend behavior matters, check it with:
+   ```bash
+   jj util backend name
+   ```
+6. Do not assume a "current branch" exists. Ask which commit/change/bookmark should be affected.
 
 ## Core mental model
 
@@ -79,7 +83,7 @@ Prefer these commands for common tasks:
 jj status                         # current working-copy state
 jj log                            # graph and nearby changes
 jj diff                           # @ relative to parent
-jj show REV                       # inspect a change/commit
+jj show REV...                    # inspect one or more changes/commits
 jj describe -m "message"          # name/edit current change without moving on
 jj commit -m "message"            # finish @ and start a new empty @
 jj new DEST                       # start new work on DEST
@@ -89,7 +93,7 @@ jj squash                         # move @ changes into parent
 jj squash -i                      # move selected hunks into parent
 jj restore path                   # restore path in @ from parent
 jj abandon REV                    # abandon visible local change
-jj git fetch                      # fetch Git remote state
+jj git fetch                      # fetch Git remote state; jj 0.42+ also imports change-ID evolution history when available
 jj git push -c REV                # push a change with generated bookmark
 jj git push --bookmark NAME        # push a named bookmark
 jj bookmark create NAME -r REV     # create publication pointer
@@ -204,6 +208,8 @@ jj git fetch
 jj rebase -b @ -d trunk()   # adjust -b and -d for the intended stack/destination
 ```
 
+In `jj 0.42.0` and newer, fetch can use preserved remote change IDs to generate evolution history and rebase local descendants onto rewritten parents. Still inspect with `jj log` before mutating local stacks, especially when collaborating with Git-only users.
+
 Do not say "checkout a branch" unless you are intentionally translating for a Git user. Prefer:
 
 ```bash
@@ -228,6 +234,7 @@ Use revsets in commands instead of scripting fragile log parsing:
 
 ```bash
 jj show 'latest(mine(), 1)'
+jj show '@-' '@--'        # jj 0.42+ accepts multiple revisions
 jj rebase -b 'description(regex:"parser")' -d trunk()
 ```
 
@@ -308,4 +315,4 @@ Use these concise phrases:
 
 ## Version caveat
 
-`jj` command names and flags evolve. This skill captures idioms that are stable in current jj workflows, but command details should be checked against the installed version with `jj help` when precision matters.
+`jj` command names and flags evolve. This skill is current with `jj 0.42.0` idioms. Command details should be checked against the installed version with `jj help` when precision matters. In particular, avoid removed pre-0.42 deprecated options such as `jj git push --allow-new`, `jj commit --reset-author`, and old `jj describe --edit`/`--no-edit`/author flags.
