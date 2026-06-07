@@ -10,7 +10,7 @@ Use this as a quick path from "I know Git" to "I can use jj safely in a real rep
 
 This repo also includes an **`idiomatic-jj` coding-agent skill** at [`skills/idiomatic-jj/SKILL.md`](skills/idiomatic-jj/SKILL.md). It packages the jj mental model and best-practice command choices for AI coding assistants, so they are less likely to apply Git habits like staging, current-branch assumptions, or `rebase --continue` workflows to jj repositories. See the [README](README.md#install-the-skill-in-the-top-5-coding-harnesses) for install and usage instructions.
 
-**Version note:** command names and flags in jj have changed over time. This guide was checked against `jj 0.42.0`; if your installed version disagrees, trust `jj help <command>` and the latest official docs.
+**Version:** this guide targets `jj 0.42.0` or newer. Commands and flags have changed across releases; `jj help <command>` and the [official docs](https://jj-vcs.github.io/jj/latest/) are always authoritative.
 
 ## Table of contents
 
@@ -375,7 +375,7 @@ jj git push --bookmark feature
 jj git push -c @-          # create/push a generated bookmark for this change
 ```
 
-In `jj 0.42.0` and newer, `jj git fetch` can use preserved change IDs from the remote to generate evolution history and rebase local descendants onto rewritten parents. In practice, this makes jj-to-jj collaboration smoother when both sides preserve change IDs. With ordinary Git-only collaborators, still think of fetch as importing remote refs/objects; inspect with `jj log` before rebasing or pushing.
+`jj git fetch` uses preserved change IDs from the remote to generate evolution history and rebase local descendants onto rewritten parents. This makes jj-to-jj collaboration smoother when both sides preserve change IDs. With ordinary Git-only collaborators, still think of fetch as importing remote refs/objects; inspect with `jj log` before rebasing or pushing.
 
 ### PR workflow: generated bookmark
 
@@ -586,7 +586,7 @@ jj log -r 'mine() & remote_bookmarks()..'
 jj log -r 'description(regex:"TODO|WIP")'
 jj diff -r '@-'
 jj show 'latest(mine(), 1)'
-jj show '@-' '@--'        # jj 0.42+ accepts multiple revisions
+jj show '@-' '@--'        # accepts multiple revisions
 ```
 
 Shell quote revsets containing `|`, `&`, `~`, `*`, or parentheses. If a revset behaves oddly, first suspect your shell ate part of it. Single quotes are usually safest on Unix shells.
@@ -635,7 +635,7 @@ tug = ["bookmark", "move", "main", "--to", "@-"]
 'HEAD' = '@-'
 ```
 
-In `jj 0.42.0` and newer, shell completions can show descriptions for custom aliases when you define them as tables with `doc` and `definition` fields:
+Shell completions can show descriptions for custom aliases when you define them as tables with `doc` and `definition` fields:
 
 ```toml
 [aliases]
@@ -646,7 +646,7 @@ Notes:
 
 - `trunk()` is a built-in revset alias intended to resolve the default trunk commit/bookmark. In simple repos, `main` may be enough; in mixed remote setups, `trunk()` can be clearer.
 - Do not over-alias commands before learning the native vocabulary. The model matters.
-- If you use a graphical merge/diff tool, configure `ui.diff-editor` for `jj split` / `jj squash -i` and `ui.merge-editor` for conflict resolution. The built-in tools are good enough to start, but GUI diff tools can make partial selection less tiring. In `jj 0.42.0` and newer, diff-editor tools can opt into `edit-invocation-mode = "file-by-file"`, which is useful for per-file tools such as `vimdiff`.
+- If you use a graphical merge/diff tool, configure `ui.diff-editor` for `jj split` / `jj squash -i` and `ui.merge-editor` for conflict resolution. The built-in tools are good enough to start, but GUI diff tools can make partial selection less tiring. Diff-editor tools can opt into `edit-invocation-mode = "file-by-file"`, which is useful for per-file tools such as `vimdiff`.
 - Consider repo-specific config for remote defaults if you use a fork: fetch from `upstream`, push to `origin`. That mirrors common GitHub contribution setups.
 
 ---
@@ -771,7 +771,7 @@ An empty `@` is normal: it is your current place to type future work. Empty comm
 
 ### What is `jj evolog`?
 
-`jj evolog` shows how a change evolved over time: previous hidden commit IDs for the same change ID, message edits, content edits, and so on. If `jj log` shows the current visible graph, `jj evolog` is the per-change archaeology tool. It is especially helpful when you think, "I had a different version of this change 20 minutes ago." In `jj 0.42.0` and newer, `evolog` no longer supports legacy commit predecessors recorded by very old jj versions before `0.30`.
+`jj evolog` shows how a change evolved over time: previous hidden commit IDs for the same change ID, message edits, content edits, and so on. If `jj log` shows the current visible graph, `jj evolog` is the per-change archaeology tool. It is especially helpful when you think, "I had a different version of this change 20 minutes ago." Note that `evolog` does not support legacy commit predecessors recorded by very old jj versions before `0.30`.
 
 ### How do I see only unpublished work?
 
